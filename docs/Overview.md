@@ -2,6 +2,27 @@
 
 ## Intro
 
+This tutorial helps you create a simple application consisting of
+- an HTML page with a yFiles for HTML diagram representing an organization chart with data fetched from an ASP.Net MVC backend
+- an ASP.Net MVC website with a WebAPI representing a REST-ful interface to some data backend. We don't describe or include any concrete database (access) layer but rather use some pseudo-random data generation to mimic this layer. A discussion of an ORM or webservice underneath the WebAPI is outside the scope of this tutorial.
+
+The application shows an organization chart which upon clicking a node gives more information about the selected person.
+
+![What we'll create](images/Application.png)
+
+The architecture is a simple client-service communication with the browser having an active role in fetching the data via ajax, i.e. the application is a single-page application (SPA). We do not delve however in the many ways one can build up an MVC structure on the client using one of the many JS frameworks out there (Angular in particular). The application is meant to be a jump-start showing how to use ASP.Net MVC together with yFiles.
+
+- [Setting up the web API](#SetupAPI)
+- [Setting up yFiles](#Setupy)
+- [Fetching data and graph creation](#FetchingData)
+  - [Some more HTML and WebAPI](#MoreAPI)  
+  - [The JavaScript application](#JSApp)
+  - [Displaying a hierarchy](#Hierarchy)
+- [A note about architecture and security](#Security)
+- [References](#References)
+
+<a name="SetupAPI"></a>
+
 ## Setting up the web API
 
 Start by creating an ASP.Net Web Application
@@ -30,7 +51,7 @@ Go to the "Manage NuGet Packages" in the solution
 
 ![Creating the solution](images/ManagePackages.png)
 
-and install "Faker.Net" by searching for it in the "Online" drawer
+and install "[Faker.Net](https://www.nuget.org/packages/Faker.Net)" by searching for it in the "Online" drawer
 
 ![Installing Faker](images/InstallFaker.png)
 
@@ -114,12 +135,13 @@ Add a new HTML file to the root of the solution, call it "index.html". Add the f
     </html>
 
 
-We use jQuery since it eases the client side development but if you venture into a large scale development you should carefully investigate options like Angular, Create, Backbone and the many other frameworks out there. While jQuery is fine for small things it does not enforces a solid client-side architecture and quickly turns your code in an unmaintainable heap. Bigger frameworks will help you to develop unit-tests, create responsive clients and much more.
+We use [jQuery](https://jquery.com) since it eases the client side development but if you venture into a large scale development you should carefully investigate options like Angular, Create, Backbone and the many other frameworks out there. While jQuery is fine for small things it does not enforces a solid client-side architecture and quickly turns your code in an unmaintainable heap. Bigger frameworks will help you to develop unit-tests, create responsive clients and much more.
 
 In any case, if you now run the solution and browse to the HTML page you will see that on clicking the button the data is returned as JSON and can be directly used. The way ASP.Net does this is via the auto-included JSON.Net library (see the VS references). There are many ways this auto-serialization can be customized, see the JSON.Net documentation and the System.ComponentMode.DataAnnotations for more on this topic.
 
 ![Fetching some data from the WebAPI](images/FetchingData.png)
 
+<a name="Setupy"></a>
 
 ## Setting up yFiles
 
@@ -281,6 +303,8 @@ The result of all this should be something like the following;
 which obviously is nothing impressive but gives you a clean start for using yFiles and ASP.Net MVC.
 Regarding the "require" in the script above, see the [asynchronous file and module loading](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/first_simple_app#asyncloading) topic in the yFiles documentation.
 
+<a name="FetchingData"></a>
+
 ## Fetching data and graph creation
 
 Let's combine the WebAPI data access and present the data in the diagram. We will create the following;
@@ -289,6 +313,8 @@ Let's combine the WebAPI data access and present the data in the diagram. We wil
 - a side-panel presenting detailed information of a selected node (data taken again from the backend)
 
 While the resulting app still remains fairly basic it does give you a fully functional yFiles frontend with ASP.Net backend which can serve as a jump-start for a more complex application with the same architecture.
+
+<a name="MoreAPI"></a>
 
 ### Some more HTML and WebAPI
 
@@ -383,6 +409,8 @@ The `Cache` object used above is just a simple way to make sure that whenever we
       }
 
 In a real-world situation you would replace the `Cache` with an internal data access or a service-oriented (SOA) mechanism.
+
+<a name="JSApp"></a>
 
 ### The JavaScript application
 
@@ -603,6 +631,8 @@ If you run the application and browse to the index.html page you should see some
 
 ![Showing server-side data](images/ShowRoot.png)
 
+<a name="Hierarchy"></a>
+
 ### Displaying a hierarchy
 
 Obviously we want more than just a single node and need to fetch a hierarchy from the WebAPI and there are various ways one can implement this. The easiest way is probably as follows, define server-side objects;
@@ -776,7 +806,7 @@ Upon clicking a node you will now see something like this
 
 ![Showing node details](images/NodeDetails.png)
 
-
+<a name="Security"></a>
 
 ## A note about architecture and security
 
@@ -784,10 +814,11 @@ The application we developed so far is a basic client-server setup with the clie
 
 The created WebAPI serves data to the active client but can also be used by any other type of client. That is, you can bind a Java or .Net desktop client to it, there is nothing particularly browser-oriented about the WebAPI. It serves XML, JSON or other serialization types in function of what is requested.
 
-The WebAPI can be hosted separately from the page-serving server but you should be aware in this case of default security mechanisms in place which typically prevent so-called cross-site scripting  ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) and cross-origin resource sharing  ()[CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)).
+The WebAPI can be hosted separately from the page-serving server but you should be aware in this case of default security mechanisms in place which typically prevent so-called cross-site scripting  ([XSS](https://en.wikipedia.org/wiki/Cross-site_scripting)) and cross-origin resource sharing  ([CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)).
 
 The data in our case are just some pseudo-random bits but in a real-world scenario you would put some data access layer underneath the WebAPI. This could be an ORM (Entity Framework or Hibernate e.g.) or access to another internal service. In addition, one would normally also have an authentication mechanism in place prior to accessing the application. ASP.Net offers plenty of good stuff to bind to [OAuth](http://oauth.net/2/) or [OpenID](https://en.wikipedia.org/wiki/OpenID). On an enterprise level, one would bind the application to some active directory authentication or [single-sign on](https://msdn.microsoft.com/en-us/library/ms972971.aspx).
 
+<a name="References"></a>
 
 ## References
 
@@ -796,3 +827,7 @@ The data in our case are just some pseudo-random bits but in a real-world scenar
 - [cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting)
 - [SSO for ASP.Net](https://msdn.microsoft.com/en-us/library/ms972971.aspx)
 - [yFiles class framework](http://docs.yworks.com/yfileshtmlv2/index.html#/dguide/class_framework)
+- [SPA with ASP.Net MVC](http://www.asp.net/single-page-application)
+- [jQuery](https://jquery.com)
+- [Angular - superheroic JavaScript framework](https://angularjs.org)
+- [Faker.Net for random data generation](https://www.nuget.org/packages/Faker.Net)
