@@ -1,4 +1,14 @@
-# yFiles for HTML with ASP.Net MVC backend
+# yFiles for HTML 1.x with ASP.Net MVC backend
+
+---
+**NOTE**
+
+This article was written for yFiles for HTML 1.x, which is deprecated, now. The 2.x series provides a greatly improved API.
+Conceptually, however, most of the code can be reused. Specifically the ASP.net specific parts can be reused exactly. 
+The JavaScript parts need some adjustments, though. They should be rather obvious if you have used the current yFiles API, before, though.
+Still, if you need help, please contact our support team and tell them about the difficulties you were running into.
+
+---
 
 ## Intro
 
